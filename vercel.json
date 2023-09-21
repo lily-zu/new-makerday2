@@ -1,7 +1,0 @@
-// vercel.json
-
-{
-  "functions": {
-    "api/*": "server/api.js"
-  }
-}
