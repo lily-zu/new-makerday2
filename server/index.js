@@ -45,6 +45,25 @@ app.get('/devices', async (req, res) => {
   }
 });
 
+// Add this route to your Express.js application
+app.get('/devices/:deviceId', async (req, res) => {
+  const { deviceId } = req.params;
+
+  try {
+    const device = await Device.findById(deviceId);
+    
+    if (!device) {
+      res.status(404).json({ error: 'Device not found' });
+      return;
+    }
+    
+    res.json(device);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Toggle device switches
 app.post('/toggle/:deviceId', async (req, res) => {
   const { deviceId } = req.params;
