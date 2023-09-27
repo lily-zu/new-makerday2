@@ -43,6 +43,31 @@ app.get('/devices', async (req, res) => {
   }
 });
 
+// Add this route to get toggle status by device ID
+app.get('/toggle-status/:deviceId', async (req, res) => {
+  const { deviceId } = req.params;
+
+  try {
+    const device = await Device.findById(deviceId);
+
+    if (!device) {
+      res.status(404).json({ error: 'Device not found' });
+      return;
+    }
+
+    const toggleStatus = {
+      switch1: device.switch1,
+      switch2: device.switch2,
+    };
+
+    res.json(toggleStatus);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 // Get a device by ID
 app.get('/devices/:deviceId', async (req, res) => {
   const { deviceId } = req.params;
