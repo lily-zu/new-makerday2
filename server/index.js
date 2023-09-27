@@ -64,6 +64,42 @@ app.get('/devices/:deviceId', async (req, res) => {
   }
 });
 
+// Toggle device switches by ID
+app.post('/toggle/:deviceId', async (req, res) => {
+  const { deviceId } = req.params;
+  const { switch1, switch2 } = req.body;
+
+  try {
+    const device = await Device.findById(deviceId);
+    if (!device) {
+      res.status(404).json({ error: 'Device not found' });
+      return;
+    }
+
+    const switchEvents = [];
+
+    if (switch1 !== undefined) {
+      device.switch1 = switch1;
+      switchEvents.push({ switchNumber: 1, switchedOn: switch1 });
+    }
+
+    if (switch2 !== undefined) {
+      device.switch2 = switch2;
+      switchEvents.push({ switchNumber: 2, switchedOn: switch2 });
+    }
+
+    device.switchEvents = [...device.switchEvents, ...switchEvents];
+
+    await device.save();
+
+    res.json({ message: 'Device toggled successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 // Toggle device switches
 app.post('/toggle/:deviceId', async (req, res) => {
   const { deviceId } = req.params;
